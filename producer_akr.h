@@ -6,9 +6,6 @@
 * used in the producer_akr.c and consumer_akr.c files.
 */
 
-// #ifndef PRODUCER_AKR_H
-// #define PRODUCER_AKR_H
-
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -36,28 +33,6 @@ sem_t * empty;
 sem_t * full;
 sem_t * lock;
 
-// typedef struct {
-//   int itm;
-//   char msg[25];
-// } items;
-//
-// sem_t *empty; //number of empty buffers
-// extern sem_t *empty;
-// sem_t *full; //number of messages in buffer
-// extern sem_t *full;
-// // int *lock; //mutex, prevents threads unauthorized from using buffer
-// // extern int *lock;
-// pthread_mutex_t *lock;
-// extern pthread_mutex_t *lock;
-// int *BUFFER_SIZE = 0;
-// extern int *BUFFER_SIZE;
-// int *msgRemain = 0; //number remaining messages
-// extern int *msgRemain;
-// items* AKR;
-// extern items* AKR;
-// int firstFull = 0;
-// extern int firstFull; //first full spot in buffer
-
 /*
 * determins if the passed in parameter is a number or not
 *    @param char[] : the char array of an input value
@@ -77,20 +52,4 @@ void helpMessage();
 *    @param void* : the producer number that is using the function
 *    @return void* : nothing gets returned
 */
-// void *produce(void *ptr);
 void *produce();
-
-// /*
-// * waits until the buffer is no longer locked and buffer is not full
-// *    @return void : nothing gets returned
-// */
-// void wait();
-//
-// /*
-// * increments values and changes where the nextOpen pointer goes, also unlocks
-// * the lock on the buffer
-// *    @return void : nothing gets returned
-// */
-// void signal();
-
-// #endif

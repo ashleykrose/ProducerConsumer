@@ -70,10 +70,7 @@ void helpMessage(){
 *    @param void* : the consumer number that is using the function
 *    @return void* : nothing gets returned
 */
-// void *consume(void *ptr){
-//   char *out = (char*)ptr;
 void *consume(){
-  // printf("OUT => %p, ptr => %p\n", &out, &ptr);
   pid_t tid = syscall(SYS_gettid);
   do {
     char message[16];
@@ -89,11 +86,8 @@ void *consume(){
     //critical section
     --msgToConsume;
     strncpy(message, out, msgLen);
-    // printf("     Out Address Before: %p\n", (void*)out);
     printf("Consumer %d consumed item %s (%d/%d)\n", tid, message, (NUM_CMESSAGES - msgToConsume), NUM_CMESSAGES);
     out += (msgLen % SIZE);
-    // printf("OUT => %p, ptr => %p\n", &out, &ptr);
-    // printf("     Out Address After: %p\n", (void*)out);
     //exit section
     int errLPost = sem_post(lock);
     if (errLPost < 0){
@@ -104,9 +98,7 @@ void *consume(){
       printf("ERROR sem_post(empty): %s\n", strerror(errno));
     }
     sleep(1);
-    printf("MSGTOCONSUME (%d): %d\n", tid, msgToConsume);
   } while (msgToConsume > 0);
-  printf("after wile loop\n");
   pthread_exit(0);
 }
 
@@ -148,18 +140,14 @@ int main(int argc, const char* argv[]){
   } else {
     printf("The Producer is running\n");
     if (argc == 3 || argc == 1) {
-      printf("Valid values\n");
       int NUM_CONS = 5;
       int NUM_CMESS = 100;
       msgLen = 16;
       if (argc == 3) {
-        printf("Values sent in\n");
         //verify these are all numbers!
         char number[100] = ""; //when left without the 100 it threw a stack smashing error
-        printf("check values\n");
         for(int i = 1; i < 3; i++){
           strcpy(number, argv[i]);
-          printf("copied string\n");
           bool isNum = false;
           isNum = isNumber(number); //check if it is a number
           if(!isNum){
@@ -167,18 +155,14 @@ int main(int argc, const char* argv[]){
             helpMessage();
           }
         }
-        printf("numbers checked\n");
         NUM_CONS = atoi(argv[1]);
         NUM_CMESS = atoi(argv[2]);
-        printf("Set Values\n");
       }
       NUM_CONSUMERS = NUM_CONS;
       NUM_CMESSAGES = NUM_CMESS;
       msgToConsume = NUM_CMESS;
-      printf("Set Global Variables\n");
       receiveVars();
       //open semaphores
-      printf("Opening Sems\n");
       empty = sem_open("empty", 0);
       if (empty <= 0){
         printf("ERROR empty sem_open(): %s\n", strerror(errno));
@@ -191,9 +175,7 @@ int main(int argc, const char* argv[]){
       if (lock <= 0){
         printf("ERROR lock sem_open(): %s\n", strerror(errno));
       }
-      printf("Opened Semaphores\n");
       //initialize shared memory
-      printf("initializing Memory\n");
       int shm_fd = shm_open("AKR", O_CREAT | O_RDWR, 0666);
       SIZE = BUFFER_SIZE * sizeof(char)*msgLen;
       out = mmap(0, SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
@@ -202,18 +184,11 @@ int main(int argc, const char* argv[]){
         printf("Error waiting on empty %s\n", strerror(errno));
         exit(-1);
       }
-      printf("initialized Memory\n");
       //initialize and join producer threads
       pthread_t tid[NUM_CONSUMERS];
-      for (int i = 0; i < NUM_CONSUMERS; i++){
-        printf("tid[%d]: %lu\n", i, tid[i]);
-      }
       pthread_attr_t attr;
       pthread_attr_init(&attr);
       for (int i = 0; i < NUM_CONSUMERS; i++){
-        // if (!pthread_create(&tid[i], &attr, consume, out)) {
-        //   printf("Thread created successfully\n");
-        // }
         if (!pthread_create(&tid[i], &attr, consume, NULL)) {
           printf("Thread created successfully\n");
         }

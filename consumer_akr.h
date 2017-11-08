@@ -6,9 +6,6 @@
 * consumer_akr.c file.
 */
 
-// #ifndef CONSUMER_AKR_H
-// #define CONSUMER_AKR_H
-
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -55,20 +52,4 @@ void helpMessage();
 *    @param void* : the consumer number that is using the function
 *    @return void* : nothing gets returned
 */
-// void *consume(void *arg);
 void *consume();
-
-// /*
-// * waits until the buffer is no longer locked and buffer is not empty
-// *    @return void : nothing gets returned
-// */
-// void wait();
-//
-// /*
-// * increments values and changes where the firstFull pointer goes, also unlocks
-// * the lock on the buffer
-// *    @return void : nothing gets returned
-// */
-// void signal();
-
-// #endif
